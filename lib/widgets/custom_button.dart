@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -7,10 +5,11 @@ class CustomButton extends StatelessWidget {
   final String label;
   final String? imagePath;
   final double? height, width, borderRadius, fontSize;
-  final Color? labelColor, bgColor,borderColor,iconColor;
+  final Color? labelColor, bgColor, borderColor, iconColor;
   final FontWeight? fontWeight;
   final void Function()? onTap;
   final IconData? icon;
+  final bool isLoading;
   const CustomButton({
     super.key,
     required this.label,
@@ -22,7 +21,11 @@ class CustomButton extends StatelessWidget {
     this.bgColor,
     this.fontWeight,
     this.onTap,
-    this.borderColor, this.imagePath, this.iconColor, this.icon,
+    this.borderColor,
+    this.imagePath,
+    this.iconColor,
+    this.icon,
+    this.isLoading = false,
   });
 
   @override
@@ -31,40 +34,48 @@ class CustomButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         height: height ?? 55,
-        width: width ??  double.infinity,
+        width: width ?? double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(borderRadius ?? 10),
           color: bgColor ?? Colors.white,
-          border: Border.all(
-              width: 1.5,
-              color: borderColor ?? Colors.transparent),
+          border:
+              Border.all(width: 1.5, color: borderColor ?? Colors.transparent),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (imagePath != null) ...[
-              SvgPicture.asset(
-                imagePath!,
-                width: 25,
-                height: 25,
-                color: iconColor ,
-              ),
-              const SizedBox(width: 15),
-            ],
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: fontSize ?? 14,
-                fontWeight: fontWeight ?? FontWeight.w400,
-                color: labelColor,
-              ),
-            ),
-            if (icon != null) ...[
-            const SizedBox(width: 2),
-            Icon(icon,color: Colors.white,size: 18,),
-
-            ],
-          ],
+          children: isLoading
+              ? [
+                  const CircularProgressIndicator.adaptive(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )
+                ]
+              : [
+                  if (imagePath != null) ...[
+                    SvgPicture.asset(
+                      imagePath!,
+                      width: 25,
+                      height: 25,
+                      color: iconColor,
+                    ),
+                    const SizedBox(width: 15),
+                  ],
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: fontSize ?? 14,
+                      fontWeight: fontWeight ?? FontWeight.w400,
+                      color: labelColor,
+                    ),
+                  ),
+                  if (icon != null) ...[
+                    const SizedBox(width: 2),
+                    Icon(
+                      icon,
+                      color: Colors.white,
+                      size: 18,
+                    ),
+                  ],
+                ],
         ),
       ),
     );

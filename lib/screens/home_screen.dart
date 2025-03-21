@@ -11,22 +11,27 @@ import 'package:get/get.dart';
 
 class HomeScreen extends StatefulWidget {
   var userType;
-   HomeScreen({super.key,required this.userType});
+  HomeScreen({super.key, required this.userType});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-    final GlobalKey<SliderDrawerState> _sliderDrawerKey =
+  final GlobalKey<SliderDrawerState> _sliderDrawerKey =
       GlobalKey<SliderDrawerState>();
   late String title;
-   late Widget currentScreen;
-     @override
+  late Widget currentScreen;
+  @override
   void initState() {
     title = "DashBoard";
-    currentScreen =  (widget.userType == 'Student')?StudentDashboard():(widget.userType == 'Teacher')?StudentDashboard():(widget.userType == 'Admin')?AdminDashboard():StudentDashboard();
+    currentScreen = (widget.userType == 'Student')
+        ? StudentDashboard()
+        : (widget.userType == 'Teacher')
+            ? StudentDashboard()
+            : (widget.userType == 'Admin')
+                ? AdminDashboard()
+                : StudentDashboard();
     print('userType:${widget.userType}');
     super.initState();
   }
@@ -36,49 +41,53 @@ class _HomeScreenState extends State<HomeScreen> {
     return SafeArea(
       child: Scaffold(
         body: SliderDrawer(
-                  appBar: SliderAppBar(
-                      appBarColor: Colors.white,
-                      title: Text(title,
-                          style: const TextStyle(
-                              fontSize: 22, fontWeight: FontWeight.w700))),
-                  key: _sliderDrawerKey,
-                  sliderOpenSize: 179,
-                  slider: _SliderView(
-                    onItemClick: (title) {
-                      _sliderDrawerKey.currentState!.closeSlider();
-                      setState(() {
-                        this.title = title;
-                        currentScreen = _getScreenForTitle(title);
-                      });
-                    },
-                  ),
-                  child: currentScreen),
+            appBar: SliderAppBar(
+                appBarColor: Colors.white,
+                title: Text(title,
+                    style: const TextStyle(
+                        fontSize: 22, fontWeight: FontWeight.w700))),
+            key: _sliderDrawerKey,
+            sliderOpenSize: 179,
+            slider: _SliderView(
+              onItemClick: (title) {
+                _sliderDrawerKey.currentState!.closeSlider();
+                setState(() {
+                  this.title = title;
+                  currentScreen = _getScreenForTitle(title);
+                });
+              },
+            ),
+            child: currentScreen),
       ),
     );
   }
 
-     Widget _getScreenForTitle(String title) {
+  Widget _getScreenForTitle(String title) {
     switch (title) {
       case 'DashBoard':
-        return (widget.userType == 'Student')?StudentDashboard():(widget.userType == 'Teacher')?StudentDashboard():(widget.userType == 'Admin')?AdminDashboard():StudentDashboard();
-      case 'University':
-        return const UniversityScreen();
-      case 'Payments':
-        return PaymentScreen();
+        return (widget.userType == 'Student')
+            ? StudentDashboard()
+            : (widget.userType == 'Teacher')
+                ? StudentDashboard()
+                : (widget.userType == 'Admin')
+                    ? AdminDashboard()
+                    : StudentDashboard();
+      // case 'University':
+      //   return const UniversityScreen();
+      // case 'Payments':
+      //   return PaymentScreen();
       case 'Routes':
-        return RoutesScreen(); 
+        return RoutesScreen();
       case 'Setting':
-        return SettingsScreen(); 
+        return SettingsScreen();
       case 'LogOut':
-         _showLogoutConfirmationDialog(context);
-          return currentScreen;
+        _showLogoutConfirmationDialog(context);
+        return currentScreen;
       default:
         return StudentDashboard();
     }
   }
 }
-
-
 
 class _SliderView extends StatelessWidget {
   final Function(String)? onItemClick;
@@ -248,7 +257,6 @@ class Menu {
   Menu(this.iconData, this.title);
 }
 
-
 void _showLogoutConfirmationDialog(BuildContext context) {
   showDialog(
     context: context,
@@ -259,7 +267,7 @@ void _showLogoutConfirmationDialog(BuildContext context) {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); 
+              Navigator.pop(context);
             },
             child: const Text('Cancel'),
           ),

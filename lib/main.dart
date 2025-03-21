@@ -1,10 +1,15 @@
+import 'package:bus_tracking_management_system/firebase_options.dart';
 import 'package:bus_tracking_management_system/screens/dashboard_screen.dart';
 import 'package:bus_tracking_management_system/screens/login_screen.dart';
 import 'package:bus_tracking_management_system/screens/splash_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-void main() {
+main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -17,24 +22,23 @@ class MyApp extends StatefulWidget {
 
 class MyAppState extends State<MyApp> {
   late String title;
-   late Widget currentScreen;
+  late Widget currentScreen;
 
-   @override
+  @override
   void initState() {
     title = "DashBoard";
-    currentScreen =  StudentDashboard();
+    currentScreen = StudentDashboard();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-       theme: ThemeData(
+        theme: ThemeData(
           useMaterial3: false,
           primarySwatch: Colors.blue,
         ),
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen()
-    );
+        debugShowCheckedModeBanner: false,
+        home: SplashScreen());
   }
 }

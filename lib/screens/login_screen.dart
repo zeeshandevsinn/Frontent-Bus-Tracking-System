@@ -3,6 +3,7 @@ import 'package:bus_tracking_management_system/screens/selection_screen.dart';
 import 'package:bus_tracking_management_system/utils/consts.dart';
 import 'package:bus_tracking_management_system/widgets/custom_button.dart';
 import 'package:bus_tracking_management_system/widgets/custom_text_form_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -24,6 +25,50 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController passWordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   bool isPasswordVisible = false;
+  bool isLoading = false;
+  Future<void> _adminLogin() async {
+    try {
+      setState(() {
+        isLoading = true;
+      });
+
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text.trim(),
+        password: passWordController.text.trim(),
+      );
+
+      setState(() {
+        isLoading = false;
+      });
+      Get.to(() => HomeScreen(userType: widget.userType));
+    } on FirebaseAuthException catch (e) {
+      setState(() {
+        isLoading = false;
+      });
+      String errorMessage = 'An error occurred. Please try again.';
+
+      if (e.code == 'user-not-found') {
+        errorMessage = 'No user found with this email.';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Incorrect password. Please try again.';
+      } else if (e.code == 'invalid-email') {
+        errorMessage = 'Invalid email address format.';
+      } else if (e.code == 'user-disabled') {
+        errorMessage = 'This user account has been disabled.';
+      } else if (e.code == 'too-many-requests') {
+        errorMessage = 'Too many login attempts. Please try again later.';
+      }
+
+      Get.snackbar(
+        'Login Failed',
+        errorMessage,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -116,6 +161,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     height: 20,
                   ),
                   CustomButton(
+                    isLoading: isLoading,
                     onTap: () {
                       // Validate the form
                       if (_formKey.currentState!.validate()) {
@@ -125,7 +171,8 @@ class _SignInScreenState extends State<SignInScreen> {
                         } else if (widget.userType == 'Teacher') {
                           Get.to(() => HomeScreen(userType: widget.userType));
                         } else if (widget.userType == 'Admin') {
-                          Get.to(() => HomeScreen(userType: widget.userType));
+                          _adminLogin();
+                          // Get.to(() => HomeScreen(userType: widget.userType));
                         } else {
                           Get.to(() => HomeScreen(userType: widget.userType));
                         }
