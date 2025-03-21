@@ -26,62 +26,74 @@ class _SelectionSignupScreenState extends State<SelectionSignupScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CustomButton(
-                          onTap:(){ Get.to(()=> TeacherSignUpScreen());},
-                          label: 'Signup as a teacher',
-                          bgColor:  AppColors.primary,
-                          labelColor: Colors.white,
-                          borderRadius: 50,
-                          height: 50,
-                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CustomButton(
-                          onTap:(){ Get.to(()=> StudentSignUpScreen());},
-                          label: 'Signup as a student',
-                          bgColor:  AppColors.primary,
-                          labelColor: Colors.white,
-                          borderRadius: 50,
-                          height: 50,
-                       ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      CustomButton(
-                          onTap:(){ Get.to(()=> AdminSignUpScreen());},
-                          label: 'Signup as an admin',
-                          bgColor:  AppColors.primary,
-                          labelColor: Colors.white,
-                          borderRadius: 50,
-                          height: 50,
-                       ),
-                      const SizedBox(
-                        height: 12,
-                      ),
-                        RichText(
-                    text: TextSpan(
-                      text: "Already have an account ?  ",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Get.to(()=>const SignInScreen());
-                            },
-                          text: 'Sign In',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                onTap: () {
+                  Get.to(() => SignInScreen(
+                        userType: "Teacher",
+                      ));
+                },
+                label: 'SignIn as a teacher',
+                bgColor: AppColors.primary,
+                labelColor: Colors.white,
+                borderRadius: 50,
+                height: 50,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomButton(
+                onTap: () {
+                  Get.to(() => SignInScreen(
+                        userType: "Student",
+                      ));
+                },
+                label: 'SignIn as a student',
+                bgColor: AppColors.primary,
+                labelColor: Colors.white,
+                borderRadius: 50,
+                height: 50,
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              CustomButton(
+                onTap: () {
+                  Get.to(() => SignInScreen(
+                        userType: "Admin",
+                      ));
+                },
+                label: 'SignIn as an admin',
+                bgColor: AppColors.primary,
+                labelColor: Colors.white,
+                borderRadius: 50,
+                height: 50,
+              ),
+              const SizedBox(
+                height: 12,
+              ),
+              // RichText(
+              //   text: TextSpan(
+              //     text: "Already have an account ?  ",
+              //     style: const TextStyle(
+              //       color: Colors.black,
+              //       fontSize: 12,
+              //       fontWeight: FontWeight.w400,
+              //     ),
+              //     children: <TextSpan>[
+              //       TextSpan(
+              //         recognizer: TapGestureRecognizer()
+              //           ..onTap = () {
+              //             Get.to(() => const SignInScreen());
+              //           },
+              //         text: 'Sign In',
+              //         style: const TextStyle(
+              //           fontWeight: FontWeight.bold,
+              //           fontSize: 14,
+              //           color: AppColors.primary,
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
             ],
           ),
         ),
