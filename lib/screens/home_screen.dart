@@ -8,10 +8,12 @@ import 'package:bus_tracking_management_system/screens/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_drawer/flutter_slider_drawer.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   var userType;
-  HomeScreen({super.key, required this.userType});
+  final userData;
+  HomeScreen({super.key, required this.userType, this.userData});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -26,12 +28,16 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     title = "DashBoard";
     currentScreen = (widget.userType == 'Student')
-        ? StudentDashboard()
+        ? StudentDashboard(
+            userData: widget.userData,
+          )
         : (widget.userType == 'Teacher')
-            ? StudentDashboard()
+            ? StudentDashboard(
+                userData: widget.userData,
+              )
             : (widget.userType == 'Admin')
                 ? AdminDashboard()
-                : StudentDashboard();
+                : StudentDashboard(userData: widget.userData);
     print('userType:${widget.userType}');
     super.initState();
   }
@@ -49,6 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
             key: _sliderDrawerKey,
             sliderOpenSize: 179,
             slider: _SliderView(
+              userData: widget.userData,
               onItemClick: (title) {
                 _sliderDrawerKey.currentState!.closeSlider();
                 setState(() {
@@ -66,12 +73,14 @@ class _HomeScreenState extends State<HomeScreen> {
     switch (title) {
       case 'DashBoard':
         return (widget.userType == 'Student')
-            ? StudentDashboard()
+            ? StudentDashboard(
+                userData: widget.userData,
+              )
             : (widget.userType == 'Teacher')
-                ? StudentDashboard()
+                ? StudentDashboard(userData: widget.userData)
                 : (widget.userType == 'Admin')
                     ? AdminDashboard()
-                    : StudentDashboard();
+                    : StudentDashboard(userData: widget.userData);
       // case 'University':
       //   return const UniversityScreen();
       // case 'Payments':
@@ -91,8 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class _SliderView extends StatelessWidget {
   final Function(String)? onItemClick;
-
-  const _SliderView({Key? key, this.onItemClick}) : super(key: key);
+  final userData;
+  const _SliderView({Key? key, this.onItemClick, this.userData})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -117,8 +127,8 @@ class _SliderView extends StatelessWidget {
           const SizedBox(
             height: 20,
           ),
-          const Text(
-            'John',
+          Text(
+            userData['name'] ?? 'John',
             textAlign: TextAlign.center,
             style: TextStyle(
               color: Colors.black,
@@ -131,8 +141,9 @@ class _SliderView extends StatelessWidget {
           ),
           ...[
             Menu(Icons.home, 'DashBoard'),
-            Menu(Icons.school, 'University'),
-            Menu(Icons.payment, 'Payments'),
+            // Menu(Icons.school, 'University'),
+            // Menu(Icons.payment, 'Payments'),
+            // Menu(Icons.notifications, 'Notifications'),
             Menu(Icons.route, 'Routes'),
             Menu(Icons.settings, 'Setting'),
             Menu(Icons.arrow_back_ios, 'LogOut')
@@ -272,7 +283,10 @@ void _showLogoutConfirmationDialog(BuildContext context) {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              await prefs.clear(); // Clears all stored preferences
+
               Navigator.pop(context);
               Get.offAll(() => const SignInScreen());
             },

@@ -1,12 +1,16 @@
+import 'dart:convert';
+
 import 'package:bus_tracking_management_system/screens/home_screen.dart';
 import 'package:bus_tracking_management_system/screens/selection_screen.dart';
 import 'package:bus_tracking_management_system/utils/consts.dart';
 import 'package:bus_tracking_management_system/widgets/custom_button.dart';
 import 'package:bus_tracking_management_system/widgets/custom_text_form_field.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
   final String? userType;
@@ -37,6 +41,10 @@ class _SignInScreenState extends State<SignInScreen> {
         password: passWordController.text.trim(),
       );
 
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setString('userType', widget.userType!);
+      // await prefs.setString('userData', jsonEncode(userData)
+      // );
       setState(() {
         isLoading = false;
       });
@@ -45,11 +53,11 @@ class _SignInScreenState extends State<SignInScreen> {
       setState(() {
         isLoading = false;
       });
-      String errorMessage = 'An error occurred. Please try again.';
+      String errorMessage = e.code;
 
       if (e.code == 'user-not-found') {
         errorMessage = 'No user found with this email.';
-      } else if (e.code == 'wrong-password') {
+      } else if (e.code.contains('wrong-password')) {
         errorMessage = 'Incorrect password. Please try again.';
       } else if (e.code == 'invalid-email') {
         errorMessage = 'Invalid email address format.';
@@ -66,6 +74,130 @@ class _SignInScreenState extends State<SignInScreen> {
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
+    }
+  }
+
+  // Future<void> _loginUser() async {
+  //   if (_formKey.currentState!.validate()) {
+  //     setState(() {
+  //       isLoading = true;
+  //     });
+  //     String email = emailController.text.trim();
+  //     String password = passWordController.text.trim();
+
+  //     try {
+  //       CollectionReference collection;
+
+  //       if (widget.userType == 'Student') {
+  //         collection = FirebaseFirestore.instance
+  //             .collection('admin')
+  //             .doc(AdminDocID)
+  //             .collection('students');
+  //       } else if (widget.userType == 'Teacher') {
+  //         collection = FirebaseFirestore.instance
+  //             .collection('admin')
+  //             .doc(AdminDocID)
+  //             .collection('teachers');
+  //       } else {
+  //         _adminLogin();
+  //         return;
+  //       }
+
+  //       // Check if user exists in Firestore
+  //       QuerySnapshot querySnapshot = await collection
+  //           .where("email", isEqualTo: email)
+  //           .where("password", isEqualTo: password)
+  //           .get();
+
+  //       if (querySnapshot.docs.isNotEmpty) {
+  //         // User found, save data & navigate to dashboard
+  //         var userData =
+  //             querySnapshot.docs.first.data() as Map<String, dynamic>;
+  //         setState(() {
+  //           isLoading = false;
+  //         });
+
+  //         Get.to(
+  //             () => HomeScreen(userType: widget.userType, userData: userData));
+  //       } else {
+  //         setState(() {
+  //           isLoading = false;
+  //         });
+  //         Get.snackbar("Login Failed", "Invalid Email or Password",
+  //             backgroundColor: Colors.red, colorText: Colors.white);
+  //       }
+  //     } catch (e) {
+  //       setState(() {
+  //         isLoading = false;
+  //       });
+  //       print("Error: $e");
+  //       Get.snackbar("Error", "Something went wrong, try again later.",
+  //           backgroundColor: Colors.red, colorText: Colors.white);
+  //     }
+  //   }
+  // }
+
+  Future<void> _loginUser() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        isLoading = true;
+      });
+
+      String email = emailController.text.trim();
+      String password = passWordController.text.trim();
+
+      try {
+        CollectionReference collection;
+
+        if (widget.userType == 'Student') {
+          collection = FirebaseFirestore.instance
+              .collection('admin')
+              .doc(AdminDocID)
+              .collection('students');
+        } else if (widget.userType == 'Teacher') {
+          collection = FirebaseFirestore.instance
+              .collection('admin')
+              .doc(AdminDocID)
+              .collection('teachers');
+        } else {
+          _adminLogin();
+          return;
+        }
+
+        QuerySnapshot querySnapshot = await collection
+            .where("email", isEqualTo: email)
+            .where("password", isEqualTo: password)
+            .get();
+
+        if (querySnapshot.docs.isNotEmpty) {
+          var userData =
+              querySnapshot.docs.first.data() as Map<String, dynamic>;
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('userType', widget.userType!);
+          await prefs.setString('userData', jsonEncode(userData));
+
+          setState(() {
+            isLoading = false;
+          });
+
+          Get.offAll(
+              () => HomeScreen(userType: widget.userType, userData: userData));
+        } else {
+          setState(() {
+            isLoading = false;
+          });
+          Get.snackbar("Login Failed", "Invalid Email or Password",
+              backgroundColor: Colors.red, colorText: Colors.white);
+        }
+      } catch (e) {
+        setState(() {
+          isLoading = false;
+        });
+        print("Error: $e");
+        Get.snackbar("Error", "Something went wrong, try again later.",
+            backgroundColor: Colors.red, colorText: Colors.white);
+      }
     }
   }
 
@@ -167,9 +299,11 @@ class _SignInScreenState extends State<SignInScreen> {
                       if (_formKey.currentState!.validate()) {
                         // If validation passes, navigate to the respective dashboard
                         if (widget.userType == 'Student') {
-                          Get.to(() => HomeScreen(userType: widget.userType));
+                          _loginUser();
+                          // Get.to(() => HomeScreen(userType: widget.userType));
                         } else if (widget.userType == 'Teacher') {
-                          Get.to(() => HomeScreen(userType: widget.userType));
+                          _loginUser();
+                          // Get.to(() => HomeScreen(userType: widget.userType));
                         } else if (widget.userType == 'Admin') {
                           _adminLogin();
                           // Get.to(() => HomeScreen(userType: widget.userType));

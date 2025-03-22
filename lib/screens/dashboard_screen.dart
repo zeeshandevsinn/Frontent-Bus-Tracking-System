@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:bus_tracking_management_system/screens/admin_dashboard.dart';
 import 'package:bus_tracking_management_system/screens/live_bus_tracking_screen.dart';
 import 'package:bus_tracking_management_system/utils/consts.dart';
@@ -5,16 +7,30 @@ import 'package:bus_tracking_management_system/widgets/custom_app_bar.dart';
 import 'package:bus_tracking_management_system/widgets/custom_bar_chart.dart';
 import 'package:flutter/material.dart';
 
-class StudentDashboard extends StatelessWidget {
+class StudentDashboard extends StatefulWidget {
+  final userData;
+  const StudentDashboard({
+    super.key,
+    this.userData,
+  });
+  @override
+  State<StudentDashboard> createState() => _StudentDashboardState();
+}
+
+class _StudentDashboardState extends State<StudentDashboard> {
   final String studentName = "John Doe";
+
   final String batch = "Batch 2023";
+
   final String semester = "6th Semester";
+
   final String route = "Route A - Stop 3";
+
   final int creditsUsed = 350;
-  final int totalCredits = 1000; 
 
+  final int totalCredits = 1000;
 
-final List<ChartData> chartData = [
+  final List<ChartData> chartData = [
     ChartData(DateTime(2024, 11, 1), 120),
     ChartData(DateTime(2024, 11, 2), 150),
     ChartData(DateTime(2024, 11, 3), 100),
@@ -22,12 +38,18 @@ final List<ChartData> chartData = [
     ChartData(DateTime(2024, 11, 5), 200),
   ];
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    log("Data: ${widget.userData}");
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const CustomAppBar(
-         title: "Dashboard",
+        title: "Dashboard",
         backgroundColor: AppColors.primary,
       ),
       body: SingleChildScrollView(
@@ -36,19 +58,15 @@ final List<ChartData> chartData = [
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-             
               _buildProfileSection(),
               const SizedBox(height: 16),
-              
-          
+
               _buildLiveTrackingButton(context),
               const SizedBox(height: 16),
-              
-      
-              _buildNotificationsSection(),
-              const SizedBox(height: 16),
-              
-     
+
+              // _buildNotificationsSection(),
+              // const SizedBox(height: 16),
+
               _buildBarGraph(),
             ],
           ),
@@ -56,7 +74,6 @@ final List<ChartData> chartData = [
       ),
     );
   }
-
 
   Widget _buildProfileSection() {
     return Card(
@@ -72,16 +89,16 @@ final List<ChartData> chartData = [
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 10),
-            Text("Name: $studentName"),
-            Text("Batch: $batch"),
-            Text("Semester: $semester"),
-            Text("Route: $route"),
+            Text("Name: ${widget.userData['name']}"),
+            Text("Batch: ${widget.userData['session']}"),
+            Text("Semester: ${widget.userData['semester']}"),
+            Text("Route: ${widget.userData['route']}"),
+            Text("Route Fee: ${widget.userData['routeFee']}"),
           ],
         ),
       ),
     );
   }
-
 
   Widget _buildLiveTrackingButton(BuildContext context) {
     return ElevatedButton(
@@ -125,42 +142,35 @@ final List<ChartData> chartData = [
     );
   }
 
-
- Widget _buildBarGraph() {
-  return Card(
-    elevation: 4,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-    child: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            "Credit Usage",
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 10),
-          SizedBox(
-            height: 250,
-            child: CustomBarChart(
-              chartData: chartData,
-              header: "Bus Usage",
-              title: "Bus Tracking Usage",
-              value: "5 Days",
-              color: AppColors.primary,
-              showSubTitle: true,
-              enableZoom: true,
+  Widget _buildBarGraph() {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              "Credit Usage",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            SizedBox(
+              height: 250,
+              child: CustomBarChart(
+                chartData: chartData,
+                header: "Bus Usage",
+                title: "Bus Tracking Usage",
+                value: "5 Days",
+                color: AppColors.primary,
+                showSubTitle: true,
+                enableZoom: true,
+              ),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-
-}
-
-
-
-
-

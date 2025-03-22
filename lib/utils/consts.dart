@@ -4,19 +4,18 @@ import 'package:bus_tracking_management_system/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class AppColors{
+class AppColors {
 // Color primary =  Color.fromARGB(255, 0x0f, 0x0b, 0x5e);
   // static const Color primary = Color(0xfff4800f);
-   static const Color primary = Color.fromARGB(255, 0x0f, 0x0b, 0x5e);
+  static const Color primary = Color.fromARGB(255, 0x0f, 0x0b, 0x5e);
   static const Color lightPrimary = Color(0x99514EB6);
   static const Color secondary = Color(0xffFFD600);
   static const Color grey = Color(0xffF6F6F8);
-
-
 }
 
+String AdminDocID = "My0BEe5k53SzN7rIVsBgaMGvmzB2";
 
- void _showLogoutConfirmationDialog(BuildContext context) {
+void _showLogoutConfirmationDialog(BuildContext context) {
   showDialog(
     context: context,
     builder: (context) {
@@ -26,7 +25,7 @@ class AppColors{
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.pop(context); 
+              Navigator.pop(context);
             },
             child: const Text('Cancel'),
           ),
@@ -40,4 +39,5 @@ class AppColors{
         ],
       );
     },
-  );}
+  );
+}

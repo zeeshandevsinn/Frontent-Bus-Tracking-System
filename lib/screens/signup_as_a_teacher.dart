@@ -3,11 +3,14 @@ import 'package:bus_tracking_management_system/widgets/custom_text_form_field.da
 import 'package:flutter/material.dart';
 
 class TeacherSignUpScreen extends StatelessWidget {
+  final TextEditingController departmentController = TextEditingController();
+  final TextEditingController designationController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return BaseSignUpScreen(
+      controllers: [departmentController, designationController],
       userType: 'Teacher',
-      title: 'Teacher Signup',
+      title: 'Teacher Add',
       additionalFields: [
         CustomTextFormField(
           controller: TextEditingController(),
@@ -36,4 +39,3 @@ class TeacherSignUpScreen extends StatelessWidget {
     );
   }
 }
-

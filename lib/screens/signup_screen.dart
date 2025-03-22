@@ -15,9 +15,9 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool checkValue = false;
-    TextEditingController emailController=TextEditingController();
-  TextEditingController passWordController=TextEditingController();
-  TextEditingController nameController=TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passWordController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -35,17 +35,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    'Create your Account',
-                   style: TextStyle( fontSize: 50,
-                    fontWeight: FontWeight.bold,),
+                    'Add Users',
+                    style: TextStyle(
+                      fontSize: 50,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(
                     height: 50,
                   ),
                   CustomTextFormField(
-                    controller:nameController,
+                    controller: nameController,
                     hintText: 'Name',
-                      prefixIcon: Icons.person,
+                    prefixIcon: Icons.person,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
                         return 'Please enter your name';
@@ -58,7 +60,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   ),
                   CustomTextFormField(
                     controller: emailController,
-                    hintText:'Email' ,
+                    hintText: 'Email',
                     prefixIcon: Icons.email,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -70,7 +72,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-
                   const SizedBox(
                     height: 20,
                   ),
@@ -89,62 +90,66 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return null;
                     },
                   ),
-
                   Row(
                     children: [
                       Checkbox(
                           activeColor: AppColors.primary,
                           value: checkValue,
                           onChanged: (value) {
-                           if(mounted){
-                             setState(() {
-                              checkValue = value!;
-                            });
-                           }
+                            if (mounted) {
+                              setState(() {
+                                checkValue = value!;
+                              });
+                            }
                           }),
                       const Text(
-                      'Remember me',
-                       style: TextStyle( fontWeight: FontWeight.w600,),
+                        'Remember me',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(
                     height: 20,
-                  ),CustomButton(
-                      onTap:(){Get.to(()=>const SignInScreen());},
-                      label: 'Register',
-                      bgColor:  AppColors.primary,
-                      labelColor: Colors.white,
-                      borderRadius: 50,
-                      height: 50,
-                   ),
+                  ),
+                  CustomButton(
+                    onTap: () {
+                      Get.to(() => const SignInScreen());
+                    },
+                    label: 'Add',
+                    bgColor: AppColors.primary,
+                    labelColor: Colors.white,
+                    borderRadius: 50,
+                    height: 50,
+                  ),
                   const SizedBox(
                     height: 40,
                   ),
-                  RichText(
-                    text: TextSpan(
-                      text: "Already have an account ?  ",
-                      style: const TextStyle(
-                        color: Colors.black,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              // Get.to(()=>const SignInScreen());
-                            },
-                          text: 'Sign In',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: AppColors.primary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                  // RichText(
+                  //   text: TextSpan(
+                  //     text: "Already have an account ?  ",
+                  //     style: const TextStyle(
+                  //       color: Colors.black,
+                  //       fontSize: 12,
+                  //       fontWeight: FontWeight.w400,
+                  //     ),
+                  //     children: <TextSpan>[
+                  //       TextSpan(
+                  //         recognizer: TapGestureRecognizer()
+                  //           ..onTap = () {
+                  //             // Get.to(()=>const SignInScreen());
+                  //           },
+                  //         text: 'Sign In',
+                  //         style: const TextStyle(
+                  //           fontWeight: FontWeight.bold,
+                  //           fontSize: 14,
+                  //           color: AppColors.primary,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                 ],
               ),
             ),

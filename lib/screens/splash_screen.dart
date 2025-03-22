@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'package:bus_tracking_management_system/screens/home_screen.dart';
 import 'package:bus_tracking_management_system/screens/selection_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -44,11 +46,40 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    Timer(const Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const SelectionSignupScreen()),
-      );
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userType = prefs.getString('userType');
+    String? userDataString = prefs.getString('userData');
+
+    // Check if the JSON string is null or empty before decoding
+    Map<String, dynamic>? userData;
+    if (userDataString != null && userDataString.isNotEmpty) {
+      try {
+        userData = jsonDecode(userDataString);
+      } catch (e) {
+        print("Error decoding JSON: $e");
+        userData = null; // Handle parsing error gracefully
+      }
+    }
+
+    Timer(const Duration(seconds: 3), () {
+      if (userType != null && userData != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  HomeScreen(userType: userType, userData: userData)),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const SelectionSignupScreen()),
+        );
+      }
     });
   }
 
